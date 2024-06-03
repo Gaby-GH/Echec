@@ -314,7 +314,9 @@ Init()
 
 // Fonction Jeu
 
-Moves = []
+let Moves = []
+let LegalMoves = []
+
 function ReturnId(id){
     Moves.push(id)
     Play()
@@ -324,8 +326,18 @@ let position = []
 let turn = "W"
 function Play(){
     if (Moves.length == 1){
-        if (board[Moves[0][0] - 1][Moves[0][1] - 1] != "x"){
-            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type = ) // CONTINUER ICI
+
+        if (board[Moves[0][0] - 1][Moves[0][1] - 1] != "x" && turn == board[Moves[0][0] - 1][Moves[0][1] - 1].color){
+
+            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
+                MovePawn(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }
+                
+            
+                
+                
+                
+                // CONTINUER ICI
                                                                  // ADAPTER LE MOVE EN FONCTION DU
                                                                  // TYPE DU PION ---> BOSSER SUR FONCTIONS PIONS
         // PAS OUBLIER --> CALCULER SI ECHEC ETC ...
@@ -360,16 +372,63 @@ function Play(){
 
 // fonction de calcul des pieces (begin)
 
+
 function MovePawn(pawn){
-    if (pawn.color == turn){
-        if (pawn.color == "W"){
-            pawn.position[0]
-            pawn.position[1]
+                                // REPENSER MovePawn + SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
+}
+
+/*
+function MovePawn(pawn){
+    let x_pawn = pawn.position[0] - 1
+    let y_pawn = pawn.position[1] - 1
+
+    let moves_pawn = []
+    for (let i=0; i<=8; i++){
+        for (let j=0; j<=8; j++){
+            
+            if (board[i][j] == "x" || board[i][j].color != pawn.color){
+                if (pawn.color == "W"){
+                    
+                    if ((board[x_pawn + 1][y_pawn + 1] == board[i][j] || board[x_pawn - 1][y_pawn + 1] == board[i][j]) && (board[i][j] != "x")){
+                        moves_pawn.push([i, j])
+                        console.log(moves_pawn)
+                    }
+
+
+                }
+            }
         }
     }
 }
+*/
 
-MovePawn(board[0][1])
+
+//board[x_pawn][y_pawn + 1]
+
+// SUPP FUNCTION PAXN EN HAUT OU EN BAS (CHOISIR)
+/*
+function MovePawn(pawn){
+    let x_pawn = pawn.position[0] - 1
+    let y_pawn = pawn.position[1] - 1
+
+    let moves_pawn = []
+    moves_pawn.push(board[x_pawn][y_pawn + 1])
+
+    if (pawn.AlreadyMoved == false){
+        moves_pawn.push(board[x_pawn + 2][y_pawn + 2])
+    }
+
+    console.log(moves_pawn)
+
+
+}
+*/
+
+
+
+
+
+
 
 // fonction de calcul des pieces (end)
 
