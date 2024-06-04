@@ -347,21 +347,25 @@ function Play(){
             Moves = []
         }
 
-    }else if(Moves.length == 2){
-        if (board[Moves[1][0] - 1][Moves[1][1] - 1] == "x"){
+    }else if(Moves.length == 2){                             // if board[machin] in legalmove
+        if (board[Moves[1][0] - 1][Moves[1][1] - 1] == "x"){ // <--- remplacer condition par legalmove
             board[Moves[1][0] - 1][Moves[1][1] - 1] = board[Moves[0][0] - 1][Moves[0][1] - 1]
             board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"
             console.log(board)
 
-        }else{
-            // Corriger ici --> si deuxieme touche = pion ^m couleur alors Moves[0] = ce nouveau pion
             Moves = []
-            //Moves.push(board[Moves[1][0] - 1][Moves[1][1] - 1].position)
+            LegalMoves = []
+            Update()
+
+        }else{
+            if (board[Moves[1][0] - 1][Moves[1][1] - 1] == "x"){
+                Moves = [Moves[0]]
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == board[Moves[1][0] - 1][Moves[1][1] - 1].color){
+                Moves = [Moves[1]]
+                LegalMoves = []
+                Play()
+            }
         }
-
-        Moves = []
-
-        Update()
     }
 }
 
@@ -374,8 +378,48 @@ function Play(){
 
 
 function MovePawn(pawn){
-                                // REPENSER MovePawn + SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
-}
+    let xpawn_tab = pawn.position[0] - 1
+    let ypawn_tab = pawn.position[1] - 1
+
+    if (pawn.color == "W"){
+        if (board[xpawn_tab][ypawn_tab + 1] == "x"){
+            LegalMoves.push([xpawn_tab, ypawn_tab + 1])
+    
+            if (board[xpawn_tab][ypawn_tab].AlreadyMoved == false && board[xpawn_tab][ypawn_tab + 2] == "x"){
+                LegalMoves.push([xpawn_tab, ypawn_tab + 2])
+            }
+        }
+    
+        if (board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
+            LegalMoves.push([xpawn_tab + 1, ypawn_tab + 1])
+        }
+    
+        if (board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
+            LegalMoves.push([xpawn_tab - 1, ypawn_tab + 1])
+        }
+
+    }else if (pawn.color == "B"){
+        if (board[xpawn_tab][ypawn_tab - 1] == "x"){
+            LegalMoves.push([xpawn_tab, ypawn_tab - 1])
+    
+            if (board[xpawn_tab][ypawn_tab].AlreadyMoved == false && board[xpawn_tab][ypawn_tab - 2] == "x"){
+                LegalMoves.push([xpawn_tab, ypawn_tab - 2])
+            }
+        }
+    
+        if (board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
+            LegalMoves.push([xpawn_tab - 1, ypawn_tab - 1])
+        }
+    
+        if (board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
+            LegalMoves.push([xpawn_tab + 1, ypawn_tab - 1])
+        }
+    }
+    
+    console.log(LegalMoves)   // CONTINUER ICI MOVEPAWN TERMINE MTN AUTORISER LE MOOV UNIQUEMENT COORD LEGALMOVE
+
+
+}   //SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
 
 /*
 function MovePawn(pawn){
@@ -443,5 +487,11 @@ function Update(){
                 aff.src = ""
             }
         }
+    }
+
+    if (turn == "W"){
+        turn = "B"
+    }else if (turn == "B"){
+        turn = "W"
     }
 }
