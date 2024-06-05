@@ -390,11 +390,11 @@ function MovePawn(pawn){
             }
         }
     
-        if (board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
+        if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
             LegalMoves.push([xpawn_tab + 1, ypawn_tab + 1])
         }
     
-        if (board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
+        if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
             LegalMoves.push([xpawn_tab - 1, ypawn_tab + 1])
         }
 
@@ -407,11 +407,11 @@ function MovePawn(pawn){
             }
         }
     
-        if (board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
+        if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
             LegalMoves.push([xpawn_tab - 1, ypawn_tab - 1])
         }
     
-        if (board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
+        if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
             LegalMoves.push([xpawn_tab + 1, ypawn_tab - 1])
         }
     }
