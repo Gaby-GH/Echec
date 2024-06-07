@@ -331,6 +331,10 @@ function Play(){
 
             if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
                 MovePawn(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "rook"){
+                MoveRook(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "bishop"){
+                MoveBishop(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }
                 
             
@@ -347,11 +351,14 @@ function Play(){
             Moves = []
         }
 
-    }else if(Moves.length == 2){                             // if board[machin] in legalmove
-        if (board[Moves[1][0] - 1][Moves[1][1] - 1] == "x"){ // <--- remplacer condition par legalmove
+    }else if(Moves.length == 2){                          
+        if (LegalMoves.includes(`${Moves[1][0] - 1}${Moves[1][1] - 1}`)){
+            board[Moves[0][0] - 1][Moves[0][1] - 1].position = [`${Moves[1][0]}`, `${Moves[1][1]}`]
+            board[Moves[0][0] - 1][Moves[0][1] - 1].AlreadyMoved = true
+            
             board[Moves[1][0] - 1][Moves[1][1] - 1] = board[Moves[0][0] - 1][Moves[0][1] - 1]
-            board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"
-            console.log(board)
+            board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"  // FAIRES CONDITIONS ET GERER SI
+            console.log(board)                             // PION ADVERSE MANGER
 
             Moves = []
             LegalMoves = []
@@ -360,8 +367,14 @@ function Play(){
         }else{
             if (board[Moves[1][0] - 1][Moves[1][1] - 1] == "x"){
                 Moves = [Moves[0]]
+                LegalMoves = []
+                Play()
             }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == board[Moves[1][0] - 1][Moves[1][1] - 1].color){
                 Moves = [Moves[1]]
+                LegalMoves = []
+                Play()
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color != board[Moves[1][0] - 1][Moves[1][1] - 1].color){
+                Moves = [Moves[0]]
                 LegalMoves = []
                 Play()
             }
@@ -383,90 +396,160 @@ function MovePawn(pawn){
 
     if (pawn.color == "W"){
         if (board[xpawn_tab][ypawn_tab + 1] == "x"){
-            LegalMoves.push([xpawn_tab, ypawn_tab + 1])
+            LegalMoves.push(`${xpawn_tab}${ypawn_tab + 1}`)
     
             if (board[xpawn_tab][ypawn_tab].AlreadyMoved == false && board[xpawn_tab][ypawn_tab + 2] == "x"){
-                LegalMoves.push([xpawn_tab, ypawn_tab + 2])
+                LegalMoves.push(`${xpawn_tab}${ypawn_tab + 2}`)
             }
         }
     
         if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
-            LegalMoves.push([xpawn_tab + 1, ypawn_tab + 1])
+            LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab + 1}`)
         }
     
         if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
-            LegalMoves.push([xpawn_tab - 1, ypawn_tab + 1])
+            LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab + 1}`)
         }
 
     }else if (pawn.color == "B"){
         if (board[xpawn_tab][ypawn_tab - 1] == "x"){
-            LegalMoves.push([xpawn_tab, ypawn_tab - 1])
+            LegalMoves.push(`${xpawn_tab}${ypawn_tab - 1}`)
     
             if (board[xpawn_tab][ypawn_tab].AlreadyMoved == false && board[xpawn_tab][ypawn_tab - 2] == "x"){
-                LegalMoves.push([xpawn_tab, ypawn_tab - 2])
+                LegalMoves.push(`${xpawn_tab}${ypawn_tab - 2}`)
             }
         }
     
         if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
-            LegalMoves.push([xpawn_tab - 1, ypawn_tab - 1])
+            LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab - 1}`)
         }
     
         if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
-            LegalMoves.push([xpawn_tab + 1, ypawn_tab - 1])
+            LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab - 1}`)
         }
     }
+}   
+
+function MoveRook(rook){
+    let xrook_tab = rook.position[0] - 1
+    let yrook_tab = rook.position[1] - 1
     
-    console.log(LegalMoves)   // CONTINUER ICI MOVEPAWN TERMINE MTN AUTORISER LE MOOV UNIQUEMENT COORD LEGALMOVE
+    if (yrook_tab != 7){
+        for (let a=yrook_tab + 1; a<=7; a++){
+            if (board[xrook_tab][a] == "x"){
+                LegalMoves.push(`${xrook_tab}${a}`)
+            }else if (board[xrook_tab][a].color != board[xrook_tab][yrook_tab].color){
+                LegalMoves.push(`${xrook_tab}${a}`)
+                break
+            }else if (board[xrook_tab][a].color == board[xrook_tab][yrook_tab].color){
+                break
+            }
+        }
+    }
 
+    if (yrook_tab != 0){
+        for (let b=yrook_tab - 1; b>=0; b--){
+            if (board[xrook_tab][b] == "x"){
+                LegalMoves.push(`${xrook_tab}${b}`)
+            }else if (board[xrook_tab][b].color != board[xrook_tab][yrook_tab].color){
+                LegalMoves.push(`${xrook_tab}${b}`)
+                break
+            }else if (board[xrook_tab][b].color == board[xrook_tab][yrook_tab].color){
+                break
+            }
+        }
+    }
 
-}   //SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
+    if (xrook_tab != 7){
+        for (let c=xrook_tab + 1; c<=7; c++){
+            if (board[c][yrook_tab] == "x"){
+                LegalMoves.push(`${c}${yrook_tab}`)
+            }else if (board[c][yrook_tab].color != board[xrook_tab][yrook_tab].color){
+                LegalMoves.push(`${c}${yrook_tab}`)
+                break
+            }else if (board[c][yrook_tab].color == board[xrook_tab][yrook_tab].color){
+                break
+            }
+        }
+    }
 
-/*
-function MovePawn(pawn){
-    let x_pawn = pawn.position[0] - 1
-    let y_pawn = pawn.position[1] - 1
-
-    let moves_pawn = []
-    for (let i=0; i<=8; i++){
-        for (let j=0; j<=8; j++){
-            
-            if (board[i][j] == "x" || board[i][j].color != pawn.color){
-                if (pawn.color == "W"){
-                    
-                    if ((board[x_pawn + 1][y_pawn + 1] == board[i][j] || board[x_pawn - 1][y_pawn + 1] == board[i][j]) && (board[i][j] != "x")){
-                        moves_pawn.push([i, j])
-                        console.log(moves_pawn)
-                    }
-
-
-                }
+    if (xrook_tab != 0){
+        for (let d=xrook_tab - 1; d>=0; d--){
+            if (board[d][yrook_tab] == "x"){
+                LegalMoves.push(`${d}${yrook_tab}`)
+            }else if (board[d][yrook_tab].color != board[xrook_tab][yrook_tab].color){
+                LegalMoves.push(`${d}${yrook_tab}`)
+                break
+            }else if (board[d][yrook_tab].color == board[xrook_tab][yrook_tab].color){
+                break
             }
         }
     }
 }
-*/
 
+function MoveBishop(bishop){
+    let xbishop_tab = bishop.position[0] - 1
+    let ybishop_tab = bishop.position[1] - 1
 
-//board[x_pawn][y_pawn + 1]
-
-// SUPP FUNCTION PAXN EN HAUT OU EN BAS (CHOISIR)
-/*
-function MovePawn(pawn){
-    let x_pawn = pawn.position[0] - 1
-    let y_pawn = pawn.position[1] - 1
-
-    let moves_pawn = []
-    moves_pawn.push(board[x_pawn][y_pawn + 1])
-
-    if (pawn.AlreadyMoved == false){
-        moves_pawn.push(board[x_pawn + 2][y_pawn + 2])
+    if (xbishop_tab != 7 && ybishop_tab != 7){
+        for (let a=xbishop_tab + 1, b=ybishop_tab + 1; a<=7 && b<=7; a++, b++){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xbishop_tab][ybishop_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xbishop_tab][ybishop_tab].color){
+                break
+            }
+        }
     }
 
-    console.log(moves_pawn)
+    if (xbishop_tab != 0 && ybishop_tab != 0){
+        for (let a=xbishop_tab - 1, b=ybishop_tab - 1; a>=0 && b>=0; a--, b--){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xbishop_tab][ybishop_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xbishop_tab][ybishop_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xbishop_tab != 0 && ybishop_tab != 7){
+        for (let a=xbishop_tab - 1, b=ybishop_tab + 1; a>=0 && b<=7; a--, b++){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xbishop_tab][ybishop_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xbishop_tab][ybishop_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xbishop_tab != 7 && ybishop_tab != 0){
+        for (let a=xbishop_tab + 1, b=ybishop_tab - 1; a<=7 && b>=0; a++, b--){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xbishop_tab][ybishop_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xbishop_tab][ybishop_tab].color){
+                break
+            }
+        }
+    }
+
+    console.log(LegalMoves)
+} 
 
 
-}
-*/
+// CONTINUER LA FAIRE MOVE PONEY
+
+//SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
 
 
 
