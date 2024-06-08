@@ -335,6 +335,12 @@ function Play(){
                 MoveRook(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "bishop"){
                 MoveBishop(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pony"){
+                MovePony(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "queen"){
+                MoveQueen(board[Moves[0][0] - 1][Moves[0][1] - 1])
+            }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king"){
+                MoveKing(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }
                 
             
@@ -542,14 +548,295 @@ function MoveBishop(bishop){
             }
         }
     }
-
-    console.log(LegalMoves)
 } 
 
+function MovePony(pony){
+    let xpony_tab = pony.position[0] - 1
+    let ypony_tab = pony.position[1] - 1
 
-// CONTINUER LA FAIRE MOVE PONEY
+    if (ypony_tab != 7 && ypony_tab != 6){
+        if (xpony_tab != 0){
+            if (board[xpony_tab - 1][ypony_tab + 2] == "x"){
+                LegalMoves.push(`${xpony_tab - 1}${ypony_tab + 2}`)
+            }else if (board[xpony_tab - 1][ypony_tab + 2].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab - 1}${ypony_tab + 2}`)
+            }
+        }
 
-//SAVOIR QUAND INTRODUIRE FONCTION QUI CALCUL ECHEC
+        if (xpony_tab != 7){
+            if (board[xpony_tab + 1][ypony_tab + 2] == "x"){
+                LegalMoves.push(`${xpony_tab + 1}${ypony_tab + 2}`)
+            }else if (board[xpony_tab + 1][ypony_tab + 2].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab + 1}${ypony_tab + 2}`)
+            }
+        }
+    }
+
+    if (ypony_tab != 0 && ypony_tab != 1){
+        if (xpony_tab != 0){
+            if (board[xpony_tab - 1][ypony_tab - 2] == "x"){
+                LegalMoves.push(`${xpony_tab - 1}${ypony_tab - 2}`)
+            }else if (board[xpony_tab - 1][ypony_tab - 2].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab - 1}${ypony_tab - 2}`)
+            }
+        }
+
+        if (xpony_tab != 7){
+            if (board[xpony_tab + 1][ypony_tab - 2] == "x"){
+                LegalMoves.push(`${xpony_tab + 1}${ypony_tab - 2}`)
+            }else if (board[xpony_tab + 1][ypony_tab - 2].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab + 1}${ypony_tab - 2}`)
+            }
+        }
+    }
+
+    if (xpony_tab != 7 && xpony_tab != 6){
+        if (ypony_tab != 0){
+            if (board[xpony_tab + 2][ypony_tab - 1] == "x"){
+                LegalMoves.push(`${xpony_tab + 2}${ypony_tab - 1}`)
+            }else if (board[xpony_tab + 2][ypony_tab - 1].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab + 2}${ypony_tab - 1}`)
+            }
+        }
+
+        if (ypony_tab != 7){
+            if (board[xpony_tab + 2][ypony_tab + 1] == "x"){
+                LegalMoves.push(`${xpony_tab + 2}${ypony_tab + 1}`)
+            }else if (board[xpony_tab + 2][ypony_tab + 1].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab + 2}${ypony_tab + 1}`)
+            }
+        }
+    }
+
+    if (xpony_tab != 0 && xpony_tab != 1){
+        if (ypony_tab != 0){
+            if (board[xpony_tab - 2][ypony_tab - 1] == "x"){
+                LegalMoves.push(`${xpony_tab - 2}${ypony_tab - 1}`)
+            }else if (board[xpony_tab - 2][ypony_tab - 1].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab - 2}${ypony_tab - 1}`)
+            }
+        }
+
+        if (ypony_tab != 7){
+            if (board[xpony_tab - 2][ypony_tab + 1] == "x"){
+                LegalMoves.push(`${xpony_tab - 2}${ypony_tab + 1}`)
+            }else if (board[xpony_tab - 2][ypony_tab + 1].color != board[xpony_tab][ypony_tab].color){
+                LegalMoves.push(`${xpony_tab - 2}${ypony_tab + 1}`)
+            }
+        }
+    }
+}
+
+function MoveQueen(queen){
+    let xqueen_tab = queen.position[0] - 1
+    let yqueen_tab = queen.position[1] - 1
+
+    // Moves horizontal et vertical
+    if (yqueen_tab != 7){
+        for (let a=yqueen_tab + 1; a<=7; a++){
+            if (board[xqueen_tab][a] == "x"){
+                LegalMoves.push(`${xqueen_tab}${a}`)
+            }else if (board[xqueen_tab][a].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${xqueen_tab}${a}`)
+                break
+            }else if (board[xqueen_tab][a].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (yqueen_tab != 0){
+        for (let b=yqueen_tab - 1; b>=0; b--){
+            if (board[xqueen_tab][b] == "x"){
+                LegalMoves.push(`${xqueen_tab}${b}`)
+            }else if (board[xqueen_tab][b].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${xqueen_tab}${b}`)
+                break
+            }else if (board[xqueen_tab][b].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xqueen_tab != 7){
+        for (let c=xqueen_tab + 1; c<=7; c++){
+            if (board[c][yqueen_tab] == "x"){
+                LegalMoves.push(`${c}${yqueen_tab}`)
+            }else if (board[c][yqueen_tab].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${c}${yqueen_tab}`)
+                break
+            }else if (board[c][yqueen_tab].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xqueen_tab != 0){
+        for (let d=xqueen_tab - 1; d>=0; d--){
+            if (board[d][yqueen_tab] == "x"){
+                LegalMoves.push(`${d}${yqueen_tab}`)
+            }else if (board[d][yqueen_tab].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${d}${yqueen_tab}`)
+                break
+            }else if (board[d][yqueen_tab].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    // Moves diagonales
+
+    if (xqueen_tab != 7 && yqueen_tab != 7){
+        for (let a=xqueen_tab + 1, b=yqueen_tab + 1; a<=7 && b<=7; a++, b++){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xqueen_tab != 0 && yqueen_tab != 0){
+        for (let a=xqueen_tab - 1, b=yqueen_tab - 1; a>=0 && b>=0; a--, b--){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xqueen_tab != 0 && yqueen_tab != 7){
+        for (let a=xqueen_tab - 1, b=yqueen_tab + 1; a>=0 && b<=7; a--, b++){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+
+    if (xqueen_tab != 7 && yqueen_tab != 0){
+        for (let a=xqueen_tab + 1, b=yqueen_tab - 1; a<=7 && b>=0; a++, b--){
+            if (board[a][b] == "x"){
+                LegalMoves.push(`${a}${b}`)
+            }else if (board[a][b].color != board[xqueen_tab][yqueen_tab].color){
+                LegalMoves.push(`${a}${b}`)
+                break
+            }else if (board[a][b].color == board[xqueen_tab][yqueen_tab].color){
+                break
+            }
+        }
+    }
+}
+
+function MoveKing(king){
+    let xking_tab = king.position[0] - 1
+    let yking_tab = king.position[1] - 1
+
+    // Horizontal et vertical
+    if (xking_tab != 7){
+        if (board[xking_tab + 1][yking_tab] == "x" || board[xking_tab + 1][yking_tab].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab + 1}${yking_tab}`)
+        }
+    }
+
+    if (xking_tab != 0){
+        if (board[xking_tab - 1][yking_tab] == "x" || board[xking_tab - 1][yking_tab].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab - 1}${yking_tab}`)
+        }
+    }
+
+    if (yking_tab != 7){
+        if (board[xking_tab][yking_tab + 1] == "x" || board[xking_tab][yking_tab + 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab}${yking_tab + 1}`)
+        }
+    }
+
+    if (yking_tab != 0){
+        if (board[xking_tab][yking_tab - 1] == "x" || board[xking_tab][yking_tab - 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab}${yking_tab - 1}`)
+        }
+    }
+
+    // Diagonal
+
+    if (xking_tab != 7 && yking_tab != 7){
+        if (board[xking_tab + 1][yking_tab + 1] == "x" || board[xking_tab + 1][yking_tab + 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab + 1}${yking_tab + 1}`)
+        }
+    }
+
+    if (xking_tab != 0 && yking_tab != 7){
+        if (board[xking_tab - 1][yking_tab + 1] == "x" || board[xking_tab - 1][yking_tab + 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab - 1}${yking_tab + 1}`)
+        }
+    }
+
+    if (xking_tab != 7 && yking_tab != 0){
+        if (board[xking_tab + 1][yking_tab - 1] == "x" || board[xking_tab + 1][yking_tab - 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab + 1}${yking_tab - 1}`)
+        }
+    }
+
+    if (xking_tab != 0 && yking_tab != 0){
+        if (board[xking_tab - 1][yking_tab - 1] == "x" || board[xking_tab - 1][yking_tab - 1].color != board[xking_tab][yking_tab].color){
+            LegalMoves.push(`${xking_tab - 1}${yking_tab - 1}`)
+        }
+    }
+}
+
+// ECHEC
+
+let MoveEchec = []
+function Echec(){
+    for (let i=0; i<8; i++){
+        for (let j=0; j<8; j++){
+            if (board[i][j].color == "B"){
+                if (board[i][j].type == "pawn"){
+                    MovePawn(board[i][j])
+                }else if (board[i][j].type == "rook"){
+                    MoveRook(board[i][j])
+                }else if (board[i][j].type == "bishop"){
+                    MoveBishop(board[i][j])
+                }else if (board[i][j].type == "pony"){
+                    MovePony(board[i][j])
+                }else if (board[i][j].type == "queen"){
+                    MoveQueen(board[i][j])
+                }else if (board[i][j].type == "king"){
+                    MoveKing(board[i][j])
+                }
+            }
+        }
+    }
+
+    MoveEchec.push(LegalMoves)
+    LegalMoves = []
+    
+    let xking = WKing.position[0] - 1
+    let yking = WKing.position[1] - 1
+
+    if (MoveEchec.includes(`${xking}${yking}`)){
+        console.log("echec !")
+    }
+
+    console.log(`${xking}${yking}`)     // CONTINUER LA
+    console.log(MoveEchec)              // FINIR FONCTION ECHEC ET LA SIMPLIFIER
+}                                       // ETAPES SUR FICHE 
+
+
+
+// REPARER BUG DUCPLICA
+
 
 
 
