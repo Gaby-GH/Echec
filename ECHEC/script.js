@@ -324,10 +324,13 @@ function ReturnId(id){
 
 let position = []
 let turn = "W"
+let PriseEnPassant = {legal: false, color: undefined, position: undefined}
 function Play(){
     if (Moves.length == 1){
 
         if (board[Moves[0][0] - 1][Moves[0][1] - 1] != "x" && turn == board[Moves[0][0] - 1][Moves[0][1] - 1].color){
+
+            Echec()
 
             if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
                 MovePawn(board[Moves[0][0] - 1][Moves[0][1] - 1])
@@ -342,16 +345,9 @@ function Play(){
             }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king"){
                 MoveKing(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }
-                
-            
-                
-                
-                
-                // CONTINUER ICI
-                                                                 // ADAPTER LE MOVE EN FONCTION DU
-                                                                 // TYPE DU PION ---> BOSSER SUR FONCTIONS PIONS
-        // PAS OUBLIER --> CALCULER SI ECHEC ETC ...
 
+            
+            
 
         }else{
             Moves = []
@@ -389,10 +385,6 @@ function Play(){
 }
 
 
-
-
-
-
 // fonction de calcul des pieces (begin)
 
 
@@ -417,6 +409,18 @@ function MovePawn(pawn){
             LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab + 1}`)
         }
 
+        /*if (PriseEnPassant.legal == true){
+            if (ypawn_tab == PriseEnPassant.position[1] - 1){
+                if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
+                    LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
+                }else{
+                    PriseEnPassant.legal = false
+                }
+            }else{
+                PriseEnPassant.legal = false
+            }
+        }*/
+
     }else if (pawn.color == "B"){
         if (board[xpawn_tab][ypawn_tab - 1] == "x"){
             LegalMoves.push(`${xpawn_tab}${ypawn_tab - 1}`)
@@ -433,7 +437,27 @@ function MovePawn(pawn){
         if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
             LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab - 1}`)
         }
+
+        /*if (PriseEnPassant.legal == true){
+            if (ypawn_tab == PriseEnPassant.position[1] + 1){
+                if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
+                    LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
+                }else{
+                    PriseEnPassant.legal = false
+                }
+            }else{
+                PriseEnPassant.legal = false
+            }
+        }*/
     }
+
+    if (PriseEnPassant == true){
+        LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
+        console.log(PriseEnPassant)
+    }
+    
+
+    
 }   
 
 function MoveRook(rook){
@@ -801,7 +825,7 @@ let MoveEchec = []
 function Echec(){
     for (let i=0; i<8; i++){
         for (let j=0; j<8; j++){
-            if (board[i][j].color == "B"){
+            if (board[i][j].color != turn){
                 if (board[i][j].type == "pawn"){
                     MovePawn(board[i][j])
                 }else if (board[i][j].type == "rook"){
@@ -819,19 +843,32 @@ function Echec(){
         }
     }
 
-    MoveEchec.push(LegalMoves)
+    MoveEchec = [...LegalMoves]
     LegalMoves = []
     
-    let xking = WKing.position[0] - 1
-    let yking = WKing.position[1] - 1
+    let xking = 0
+    let yking = 0
 
-    if (MoveEchec.includes(`${xking}${yking}`)){
-        console.log("echec !")
+    if (turn == "W"){
+        let xking = WKing.position[0] - 1
+        let yking = WKing.position[1] - 1
+    }else if (turn == "B"){
+        let xking = BKing.position[0] - 1
+        let yking = BKing.position[1] - 1
     }
 
-    console.log(`${xking}${yking}`)     // CONTINUER LA
-    console.log(MoveEchec)              // FINIR FONCTION ECHEC ET LA SIMPLIFIER
-}                                       // ETAPES SUR FICHE 
+    for (let i in MoveEchec){
+        if (MoveEchec[i] == `${xking}${yking}`){
+            console.log("ECHEC")  // <--- CONTINUER ICIIII
+        }
+    }
+
+    MoveEchec = []  // <--- BIEN PLACER CETTE LIGNE 
+}                                       
+     // CONTINUER LA / ETAPES SUR FICHE 
+
+            // FINIR FONCTION ECHEC ET LA SIMPLIFIER
+
 
 
 
@@ -865,3 +902,36 @@ function Update(){
         turn = "W"
     }
 }
+
+/*
+// MOUV PRISE EN PASSANT
+            if (PriseEnPassant.legal == true){
+                if (`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}` == `${Moves[1][0] - 1}${Moves[1][1] - 1}`){
+                    if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W" && PriseEnPassant.color == "B"){
+                        board[PriseEnPassant.position[0]][PriseEnPassant.position[1] - 1] = "x"
+                    }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B" && PriseEnPassant.color == "W"){
+                        board[PriseEnPassant.position[0]][PriseEnPassant.position[1] + 1] = "x"
+                        console.log(PriseEnPassant.position)
+                    }
+                }
+
+                PriseEnPassant = {legal: false, color: undefined, position: undefined}
+            }
+            // MOUV PRISE EN PASSANT (end)
+
+            // PRISE EN PASSANT ?
+            if (board[Moves[0][0] - 1][Moves[0][1] - 1].AlreadyMoved == false && board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
+                if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W" && Moves[1][1] == 4){
+                    
+                    PriseEnPassant.legal = true
+                    PriseEnPassant.color = "W"
+                    PriseEnPassant.position = [`${Moves[0][0]}` - 1, `${Moves[0][1]}` - 0]
+                }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B" && Moves[1][1] == 5){
+                    PriseEnPassant.legal = true
+                    PriseEnPassant.color = "B"
+                    PriseEnPassant.position = [`${Moves[0][0]}` - 1, `${Moves[0][1]}` - 2]
+                }
+            }
+
+
+*/
