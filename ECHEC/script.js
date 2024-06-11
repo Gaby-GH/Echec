@@ -325,6 +325,7 @@ function ReturnId(id){
 let position = []
 let turn = "W"
 let PriseEnPassant = {legal: false, color: undefined, position: undefined}
+let MoveRoque = []
 function Play(){
     if (Moves.length == 1){
 
@@ -344,6 +345,7 @@ function Play(){
                 MoveQueen(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king"){
                 MoveKing(board[Moves[0][0] - 1][Moves[0][1] - 1])
+                Roque(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }
 
             
@@ -355,6 +357,44 @@ function Play(){
 
     }else if(Moves.length == 2){                          
         if (LegalMoves.includes(`${Moves[1][0] - 1}${Moves[1][1] - 1}`)){
+
+            // Execution Prise en passant
+
+            if (PriseEnPassant.legal == true && board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn" && PriseEnPassant.position[1] == Moves[1][1] - 1 && PriseEnPassant.position[0] == Moves[1][0] - 1){
+                if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W"){
+                    board[PriseEnPassant.position[0]][PriseEnPassant.position[1] - 1] = "x"
+                }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B"){
+                    board[PriseEnPassant.position[0]][PriseEnPassant.position[1] + 1] = "x"
+                }
+            }
+
+            // Execution Prise en passant (end)
+
+            PriseEnPassant = {legal: false, color: undefined, position: undefined}
+
+            // Activation PriseEnPassant
+
+            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn" && board[Moves[0][0] - 1][Moves[0][1] - 1].AlreadyMoved == false){
+                if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W" && Moves[1][1] == 4){
+                    PriseEnPassant.legal = true
+                    PriseEnPassant.position = [Moves[1][0] - 1, 2]
+                }else if(board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B" && Moves[1][1] == 5){
+                    PriseEnPassant.legal = true
+                    PriseEnPassant.position = [Moves[1][0] - 1, 5]
+                }
+            }
+
+            // Activation PriseEnPassant (end)
+
+            // Roque moove rook
+
+            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king" && Moves[0][0] == Moves[1][0] - 2){
+                // FINIR ICIII BOUGER LA TOUR
+            }
+
+            // Roque moove rook (end)
+
+
             board[Moves[0][0] - 1][Moves[0][1] - 1].position = [`${Moves[1][0]}`, `${Moves[1][1]}`]
             board[Moves[0][0] - 1][Moves[0][1] - 1].AlreadyMoved = true
             
@@ -409,17 +449,11 @@ function MovePawn(pawn){
             LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab + 1}`)
         }
 
-        /*if (PriseEnPassant.legal == true){
-            if (ypawn_tab == PriseEnPassant.position[1] - 1){
-                if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
-                    LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
-                }else{
-                    PriseEnPassant.legal = false
-                }
-            }else{
-                PriseEnPassant.legal = false
+        if (PriseEnPassant.legal == true && ypawn_tab == PriseEnPassant.position[1] - 1){
+            if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
+                LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
             }
-        }*/
+        }
 
     }else if (pawn.color == "B"){
         if (board[xpawn_tab][ypawn_tab - 1] == "x"){
@@ -438,26 +472,12 @@ function MovePawn(pawn){
             LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab - 1}`)
         }
 
-        /*if (PriseEnPassant.legal == true){
-            if (ypawn_tab == PriseEnPassant.position[1] + 1){
-                if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
-                    LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
-                }else{
-                    PriseEnPassant.legal = false
-                }
-            }else{
-                PriseEnPassant.legal = false
+        if (PriseEnPassant.legal == true && ypawn_tab == PriseEnPassant.position[1] + 1){
+            if (xpawn_tab == PriseEnPassant.position[0] + 1 || xpawn_tab == PriseEnPassant.position[0] - 1){
+                LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
             }
-        }*/
+        }
     }
-
-    if (PriseEnPassant == true){
-        LegalMoves.push(`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}`)
-        console.log(PriseEnPassant)
-    }
-    
-
-    
 }   
 
 function MoveRook(rook){
@@ -819,6 +839,23 @@ function MoveKing(king){
     }
 }
 
+function Roque(king){
+    let xking_tab = king.position[0] - 1
+    let yking_tab = king.position[1] - 1
+
+    if (king.AlreadyMoved == false){
+        if (board[xking_tab + 1][yking_tab] == "x" && board[xking_tab + 2][yking_tab] == "x" && board[xking_tab + 3][yking_tab].type == "rook" && board[xking_tab + 3][yking_tab].AlreadyMoved == false){
+            LegalMoves.push(`${xking_tab + 2}${yking_tab}`)
+            MoveRoque.push(`${xking_tab + 1}${yking_tab}`)
+        }
+
+        if (board[xking_tab - 1][yking_tab] == "x" && board[xking_tab - 2][yking_tab] == "x" && board[xking_tab - 3][yking_tab] == "x" && board[xking_tab - 4][yking_tab].type == "rook" && board[xking_tab - 4][yking_tab].AlreadyMoved == false){
+            LegalMoves.push(`${xking_tab - 2}${yking_tab}`)
+            MoveRoque.push(`${xking_tab - 1}${yking_tab}`)
+        }
+    }
+}
+
 // ECHEC
 
 let MoveEchec = []
@@ -902,36 +939,3 @@ function Update(){
         turn = "W"
     }
 }
-
-/*
-// MOUV PRISE EN PASSANT
-            if (PriseEnPassant.legal == true){
-                if (`${PriseEnPassant.position[0]}${PriseEnPassant.position[1]}` == `${Moves[1][0] - 1}${Moves[1][1] - 1}`){
-                    if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W" && PriseEnPassant.color == "B"){
-                        board[PriseEnPassant.position[0]][PriseEnPassant.position[1] - 1] = "x"
-                    }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B" && PriseEnPassant.color == "W"){
-                        board[PriseEnPassant.position[0]][PriseEnPassant.position[1] + 1] = "x"
-                        console.log(PriseEnPassant.position)
-                    }
-                }
-
-                PriseEnPassant = {legal: false, color: undefined, position: undefined}
-            }
-            // MOUV PRISE EN PASSANT (end)
-
-            // PRISE EN PASSANT ?
-            if (board[Moves[0][0] - 1][Moves[0][1] - 1].AlreadyMoved == false && board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
-                if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "W" && Moves[1][1] == 4){
-                    
-                    PriseEnPassant.legal = true
-                    PriseEnPassant.color = "W"
-                    PriseEnPassant.position = [`${Moves[0][0]}` - 1, `${Moves[0][1]}` - 0]
-                }else if (board[Moves[0][0] - 1][Moves[0][1] - 1].color == "B" && Moves[1][1] == 5){
-                    PriseEnPassant.legal = true
-                    PriseEnPassant.color = "B"
-                    PriseEnPassant.position = [`${Moves[0][0]}` - 1, `${Moves[0][1]}` - 2]
-                }
-            }
-
-
-*/
