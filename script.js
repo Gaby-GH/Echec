@@ -388,8 +388,18 @@ function Play(){
 
             // Roque moove rook
 
-            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king" && Moves[0][0] == Moves[1][0] - 2){
-                // FINIR ICIII BOUGER LA TOUR
+            if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "king"){
+                if (Moves[0][0] - 0 == Moves[1][0] - 2){
+                    board[Moves[0][0] - 0 + 2][Moves[0][1] - 1].position = [6, 1]
+                    board[Moves[0][0] - 0 + 2][Moves[0][1] - 1].AlreadyMoved = true
+                    board[5][Moves[0][1] - 1] = board[Moves[0][0] - 0 + 2][Moves[0][1] - 1]
+                    board[Moves[0][0] - 0 + 2][Moves[0][1] - 1] = "x"
+                }else if (Moves[0][0] - 0 == Moves[1][0] - 0 + 2){
+                    board[Moves[0][0] - 5][Moves[0][1] - 1].position = [4, 1]
+                    board[Moves[0][0] - 5][Moves[0][1] - 1].AlreadyMoved = true
+                    board[3][Moves[0][1] - 1] = board[Moves[0][0] - 5][Moves[0][1] - 1]
+                    board[Moves[0][0] - 5][Moves[0][1] - 1] = "x"
+                }
             }
 
             // Roque moove rook (end)
@@ -874,7 +884,7 @@ function Echec(){
                 }else if (board[i][j].type == "queen"){
                     MoveQueen(board[i][j])
                 }else if (board[i][j].type == "king"){
-                    MoveKing(board[i][j])
+                    MoveKing(board[i][j]) 
                 }
             }
         }
