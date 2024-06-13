@@ -347,7 +347,28 @@ function Play(){
                 MoveKing(board[Moves[0][0] - 1][Moves[0][1] - 1])
                 Roque(board[Moves[0][0] - 1][Moves[0][1] - 1])
             }
+            
 
+            // Continuer la fonction echec ici (Faire un plan sur feuilles avant) --> sinon reprendre idée en cours
+            if (echec == true){
+                // VERIFIER SI PIECE QUI MET EN ECHEC PEUT ETRE MANGER
+                for (let i in LegalMoves){
+                    for (let j in PositionEchec){
+                        if (LegalMoves[i][0] == PositionEchec[j].position[0] - 1 && LegalMoves[i][1] == PositionEchec[j].position[1] - 1){
+                            LegalMoves = [i]
+                        }
+                    }
+                }
+
+                // VERIFIER SI ON PEUT DEPLACER UN PION QUI ANNULERA L'ECHEC
+
+                // ------>
+                
+                // Sinon si ds tt les cas echec alors echec et math
+
+
+                // FAIRE UNE FONCTION COURTE QUI REGARDE SI LE MOUVEMENT D UN PION ALLIE METS EN ECHEC
+            }
             
             
 
@@ -868,53 +889,64 @@ function Roque(king){
 
 // ECHEC
 
-let MoveEchec = []
+let echec = false
+let PositionEchec = []
 function Echec(){
+    let xking = 0
+    let yking = 0
+
+    if (turn == "W"){
+        xking = WKing.position[0] - 1
+        yking = WKing.position[1] - 1
+    }else if (turn == "B"){
+        xking = BKing.position[0] - 1
+        yking = BKing.position[1] - 1
+    }
+
+    function AddEchec (i, j) {
+        for (let k in LegalMoves){
+            if (LegalMoves[k] == `${xking}${yking}`){
+                PositionEchec.push(board[i][j])
+                echec = true
+                console.log(PositionEchec)
+            }
+        }
+        LegalMoves = []
+    }
+
     for (let i=0; i<8; i++){
         for (let j=0; j<8; j++){
             if (board[i][j].color != turn){
                 if (board[i][j].type == "pawn"){
                     MovePawn(board[i][j])
+                    AddEchec(i, j)
                 }else if (board[i][j].type == "rook"){
                     MoveRook(board[i][j])
+                    AddEchec(i, j)
                 }else if (board[i][j].type == "bishop"){
                     MoveBishop(board[i][j])
+                    AddEchec(i, j)
                 }else if (board[i][j].type == "pony"){
                     MovePony(board[i][j])
+                    AddEchec(i, j)
                 }else if (board[i][j].type == "queen"){
                     MoveQueen(board[i][j])
+                    AddEchec(i, j)
                 }else if (board[i][j].type == "king"){
-                    MoveKing(board[i][j]) 
+                    MoveKing(board[i][j])
+                    AddEchec(i, j) 
+                    Roque(board[i][j])
+                    AddEchec(i, j)
                 }
             }
         }
     }
+}  
 
-    MoveEchec = [...LegalMoves]
-    LegalMoves = []
-    
-    let xking = 0
-    let yking = 0
+function EchecMath(){
 
-    if (turn == "W"){
-        let xking = WKing.position[0] - 1
-        let yking = WKing.position[1] - 1
-    }else if (turn == "B"){
-        let xking = BKing.position[0] - 1
-        let yking = BKing.position[1] - 1
-    }
-
-    for (let i in MoveEchec){
-        if (MoveEchec[i] == `${xking}${yking}`){
-            console.log("ECHEC")  // <--- CONTINUER ICIIII
-        }
-    }
-
-    MoveEchec = []  // <--- BIEN PLACER CETTE LIGNE 
-}                                       
+}
      // CONTINUER LA / ETAPES SUR FICHE 
-
-            // FINIR FONCTION ECHEC ET LA SIMPLIFIER
 
 
 
