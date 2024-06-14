@@ -331,7 +331,13 @@ function Play(){
 
         if (board[Moves[0][0] - 1][Moves[0][1] - 1] != "x" && turn == board[Moves[0][0] - 1][Moves[0][1] - 1].color){
 
-            Echec()
+             // Laisser echec la (il supprime les data de legal mouv qui servent après)
+            if (turn == "W"){
+                Echec(WKing.position[0] - 1, WKing.position[1] - 1)
+            }else if (turn == "B"){                                            
+                Echec(BKing.position[0] - 1, BKing.position[1] - 1)
+            }  
+            
 
             if (board[Moves[0][0] - 1][Moves[0][1] - 1].type == "pawn"){
                 MovePawn(board[Moves[0][0] - 1][Moves[0][1] - 1])
@@ -351,14 +357,18 @@ function Play(){
 
             // Continuer la fonction echec ici (Faire un plan sur feuilles avant) --> sinon reprendre idée en cours
             if (echec == true){
+
                 // VERIFIER SI PIECE QUI MET EN ECHEC PEUT ETRE MANGER
-                for (let i in LegalMoves){
+                /*for (let i in LegalMoves){
                     for (let j in PositionEchec){
                         if (LegalMoves[i][0] == PositionEchec[j].position[0] - 1 && LegalMoves[i][1] == PositionEchec[j].position[1] - 1){
-                            LegalMoves = [i]
+                            LegalMoves = [`${LegalMoves[i]}`]
+                            console.log(LegalMoves)
                         }
                     }
-                }
+                }*/
+
+                
 
                 // VERIFIER SI ON PEUT DEPLACER UN PION QUI ANNULERA L'ECHEC
 
@@ -368,6 +378,8 @@ function Play(){
 
 
                 // FAIRE UNE FONCTION COURTE QUI REGARDE SI LE MOUVEMENT D UN PION ALLIE METS EN ECHEC
+            }else if (echec == false){
+                for (p in LegalMoves){}
             }
             
             
@@ -889,19 +901,35 @@ function Roque(king){
 
 // ECHEC
 
+/*function EchecAndMath(){
+    function CanTake(){
+        for (let i in LegalMoves){
+            for (let j in PositionEchec){
+                if (LegalMoves[i][0] == PositionEchec[j].position[0] - 1 && LegalMoves[i][1] == PositionEchec[j].position[1] - 1){
+                    LegalMoves = [`${LegalMoves[i]}`]
+                    console.log(LegalMoves)
+                }
+            }
+        }
+    }
+
+    for (let i=0; i<8; i++){
+        for (let j=0; j<8; j++){
+            if (board[i][j].color == turn){
+                if (board[i][j].type == "pawn"){
+                    MovePawn(board[i][j])
+                }
+            }
+        }
+    }
+
+
+}*/
+
+
 let echec = false
 let PositionEchec = []
-function Echec(){
-    let xking = 0
-    let yking = 0
-
-    if (turn == "W"){
-        xking = WKing.position[0] - 1
-        yking = WKing.position[1] - 1
-    }else if (turn == "B"){
-        xking = BKing.position[0] - 1
-        yking = BKing.position[1] - 1
-    }
+function Echec(xking, yking){
 
     function AddEchec (i, j) {
         for (let k in LegalMoves){
@@ -941,11 +969,154 @@ function Echec(){
             }
         }
     }
+
+    if (echec == true){
+        let MoveStopEchec = []
+
+
+        // LA PIECE QUI MET EN ECHEC PEUT ELLE ETRE MANGER ?
+        /*function CanTake(){
+            for (let i in LegalMoves){
+                for (let j in PositionEchec){
+                    if (LegalMoves[i][0] == PositionEchec[j].position[0] - 1 && LegalMoves[i][1] == PositionEchec[j].position[1] - 1){
+                        MoveStopEchec.push(`${LegalMoves[i]}`)
+                    }
+                }
+            }
+
+            LegalMoves = []
+        }
+        
+        for (let x=0; x<8; x++){
+            for (let y=0; y<8; y++){
+                if (board[x][y].color == turn){
+                    if (board[x][y].type == "pawn"){
+                        MovePawn(board[x][y])
+                        CanTake()
+                    }else if (board[x][y].type == "rook"){
+                        MoveRook(board[x][y])
+                        CanTake()
+                    }else if (board[x][y].type == "bishop"){
+                        MoveBishop(board[x][y])
+                        CanTake()
+                    }else if (board[x][y].type == "pony"){
+                        MovePony(board[x][y])
+                        CanTake()
+                    }else if (board[x][y].type == "queen"){
+                        MoveQueen(board[x][y])
+                        CanTake()
+                    }else if (board[x][y].type == "king"){
+                        MoveKing(board[x][y])
+                        CanTake() 
+                        Roque(board[x][y])
+                        CanTake()
+                    }
+                }
+            }
+        }*/
+
+        // UN PION DE LA COULEUR DU ROI EN ECHEC PEUT IL BLOQUER ATTAQUE DE LA PIECE QUI MET EN ECHEC ?
+
+        function CanBlock(piece){
+            let PieceType = piece.type
+            let xPieceTab = piece.position[0] - 1
+            let yPieceTab = piece.position[1] - 1
+            let CaseCanBlock = [...LegalMoves]
+            for (let t in CaseCanBlock){
+                console.log(CaseCanBlock[t], 5555555, LegalMoves)
+                let xCase = CaseCanBlock[t][0]
+                let yCase = CaseCanBlock[t][1]
+                let Case = board[xCase][yCase]
+
+                board[xCase][yCase] = board[xPieceTab][yPieceTab]
+                board[xPieceTab][yPieceTab] = "x"
+
+                echec = false
+                
+                for (let i=0; i<8; i++){
+                    for (let j=0; j<8; j++){
+                        if (board[i][j].color != turn){
+                            if (board[i][j].type == "pawn"){
+                                MovePawn(board[i][j])
+                                AddEchec(i, j)
+                            }else if (board[i][j].type == "rook"){
+                                MoveRook(board[i][j])
+                                AddEchec(i, j)
+                            }else if (board[i][j].type == "bishop"){
+                                MoveBishop(board[i][j])
+                                AddEchec(i, j)
+                            }else if (board[i][j].type == "pony"){
+                                MovePony(board[i][j])
+                                AddEchec(i, j)
+                            }else if (board[i][j].type == "queen"){
+                                MoveQueen(board[i][j])
+                                AddEchec(i, j)
+                            }else if (board[i][j].type == "king"){
+                                MoveKing(board[i][j])
+                                AddEchec(i, j) 
+                                Roque(board[i][j])
+                                AddEchec(i, j)
+                            }
+                        }
+                    }
+                }
+
+                if (echec == false){
+                    MoveStopEchec.push(`${xCase}${yCase}`) //MoveStopEchec.push(`${xCase}${yCase}, piece`)
+                }
+
+                board[xCase][yCase] = Case
+                board[xPieceTab][yPieceTab] = piece
+                console.log("yeah", MoveStopEchec)
+            }
+
+            LegalMoves = []
+
+            // CONTINUER ICI FAIRE FUNCTION QUI REGARDE SI ATTACK PEUT ETRE BLOQUER
+            // REGLER BUG ROI PEUT CONTRER ECHEC SANS ETRE EN ECHEC
+        }
+
+        for (let x=0; x<8; x++){
+            for (let y=0; y<8; y++){
+                if (board[x][y].color == turn){
+                    if (board[x][y].type == "pawn"){
+                        MovePawn(board[x][y])
+                        CanBlock(board[x][y])
+                    }else if (board[x][y].type == "rook"){
+                        MoveRook(board[x][y])
+                        CanBlock(board[x][y])
+                    }else if (board[x][y].type == "bishop"){
+                        MoveBishop(board[x][y])
+                        CanBlock(board[x][y])
+                    }else if (board[x][y].type == "pony"){
+                        MovePony(board[x][y])
+                        CanBlock(board[x][y])
+                    }else if (board[x][y].type == "queen"){
+                        MoveQueen(board[x][y])
+                        CanBlock(board[x][y])
+                    }else if (board[x][y].type == "king"){
+                        MoveKing(board[x][y])
+                        CanBlock(board[x][y]) 
+                        Roque(board[x][y])
+                        CanBlock(board[x][y])
+                    }
+                }
+            }
+        }
+
+
+        // SI AUCUN MOVE QUI PEUT STOPPER  ECHEC ALORS ECHEC ET MATH
+
+        console.log(MoveStopEchec, "final")
+
+        if (MoveStopEchec.length == 0){
+            console.log("ECHEC ET MATH DANS TA GEULE")
+        }
+
+        LegalMoves = []
+    }
 }  
 
-function EchecMath(){
-
-}
      // CONTINUER LA / ETAPES SUR FICHE 
 
 
