@@ -326,6 +326,11 @@ let position = []
 let turn = "W"
 let PriseEnPassant = {legal: false, color: undefined, position: undefined}
 let MoveRoque = []
+let ListMoves = []
+let Piece = undefined
+let Case = undefined
+let xking = undefined
+let yking = undefined
 function Play(){
     if (Moves.length == 1){
 
@@ -374,14 +379,135 @@ function Play(){
 
             // FONCTION COURTE QUI REGARDE SI LE MOUVEMENT D UN PION ALLIE METS EN ECHEC
             }else if (echec == false && board[Moves[0][0] - 1][Moves[0][1] - 1] != "x"){
-                /*for (p in LegalMoves){
-                    let Piece = board[Moves[0][0] - 1][Moves[0][1] - 1]
-                    let TypeOfPiece = Piece.type
-                    let Case = board[LegalMoves[p][0]][LegalMoves[p][1]]
-                    
-                    board[LegalMoves[p][0]][LegalMoves[p][1]] = Piece
+
+                ListMoves = [...LegalMoves]
+                Piece = board[Moves[0][0] - 1][Moves[0][1] - 1]
+
+                if (turn == "W"){
+                    xking = WKing.position[0] - 1 
+                    yking = WKing.position[1] - 1
+                }else if (turn == "B"){
+                    xking = BKing.position[0] - 1 
+                    yking = BKing.position[1] - 1
+                }
+                
+                for (let c in ListMoves){
+                    Case = board[ListMoves[c][0]][ListMoves[c][0]]
+
+                    board[ListMoves[c][0]][ListMoves[c][0]] = Piece
                     board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"
 
+                    for (let o=0; o<8; o++){
+                        for (let y=0; y<8; y++){
+                            if (board[o][y].color != turn){
+                                if (board[o][y].type == "pawn"){
+                                    MovePawn(board[o][y])
+                                }else if (board[o][y].type == "rook"){
+                                    MoveRook(board[o][y])
+                                }else if (board[o][y].type == "bishop"){
+                                    MoveBishop(board[o][y])
+                                }else if (board[o][y].type == "pony"){
+                                    MovePony(board[o][y])
+                                }else if (board[o][y].type == "queen"){
+                                    MoveQueen(board[o][y])
+                                }else if (board[o][y].type == "king"){
+                                    MoveKing(board[o][y]) 
+                                    Roque(board[o][y])
+                                }
+                            }
+
+                            for (let t in LegalMoves){
+                                if (LegalMoves[t] == `${xking}${yking}`){
+                                    console.log(LegalMoves, xking, yking, LegalMoves[t])
+                                    console.log(LegalMoves.splice(t, 1)) // <---  pas ca reflechi stp
+                                    // DONC ENLEVER LA POSSIBILITE A LA PIECE D'ALLER A CETTE CASE
+                                }
+                            }
+                        }
+                    }
+
+                    board[ListMoves[c][0]][ListMoves[c][0]] = Case
+                    board[Moves[0][0] - 1][Moves[0][1] - 1] = Piece
+                }
+                
+
+
+
+
+                // REFAIRE ICI PENSER AVANT D ECRIRE LE CODE !!!!!
+
+
+
+
+
+
+
+                /*function IsEchec(xking, yking){
+                    for (let g in LegalMoves){
+                        if (g == `${xking}${yking}`){
+                            echec = true
+                        }
+                    }
+                }
+
+                let ListMoves = [...LegalMoves]
+                for (p in ListMoves){
+                    let Piece = board[Moves[0][0] - 1][Moves[0][1] - 1]
+                    let Case = board[ListMoves[p][0]][ListMoves[p][1]]
+                    
+                    board[ListMoves[p][0]][ListMoves[p][1]] = Piece
+                    board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"
+
+                    LegalMoves = []
+                    let xking = WKing.position[0] - 1
+                    let yking = WKing.position[1] - 1
+                    if (turn == "W"){
+                        xking = WKing.position[0] - 1
+                        yking = WKing.position[1] - 1
+                    }else if (turn == "B"){
+                        xking = BKing.position[0] - 1
+                        yking = BKing.position[1] - 1
+                    }
+
+                    for (let i=0; i<8; i++){
+                        for (let j=0; j<8; j++){
+                            if (board[i][j] != "x" && board[i][j].color != turn){
+                                if (board[i][j].type == "pawn"){
+                                    MovePawn(board[i][j])
+                                    IsEchec(xking, yking)
+                                }else if (board[i][j].type == "rook"){
+                                    MoveRook(board[i][j])
+                                    IsEchec(xking, yking)
+                                }else if (board[i][j].type == "bishop"){
+                                    MoveBishop(board[i][j])
+                                    IsEchec(xking, yking)
+                                }else if (board[i][j].type == "pony"){
+                                    MovePony(board[i][j])
+                                    IsEchec(xking, yking)
+                                }else if (board[i][j].type == "queen"){
+                                    MoveQueen(board[i][j])
+                                    IsEchec(xking, yking)
+                                }else if (board[i][j].type == "king"){
+                                    MoveKing(board[i][j])
+                                    IsEchec(xking, yking) 
+                                    Roque(board[i][j])
+                                    IsEchec(xking, yking)
+                                }
+                            }
+                            
+                            
+                        }
+                    }
+                    console.log(ListMoves)
+                    if (echec == true){
+                        ListMoves.splice(p, 1)
+
+                        console.log(p, ListMoves)
+                        echec = false
+                    }
+
+                    board[ListMoves[p][0]][ListMoves[p][1]] = Case
+                    board[Moves[0][0] - 1][Moves[0][1] - 1] = Piece
 
 
                     // CONTINUER LA --> empecher piece de mettre son propre roi en echec
@@ -389,7 +515,9 @@ function Play(){
                     // finir CheckPromo + reparer bug du  roi qui peut pas s'echapper
 
 
-                }*/
+                }
+
+                LegalMoves = [...ListMoves]  // <----- TESTER !!!!!!!!!! */
             }
             
             
