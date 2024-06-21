@@ -1312,7 +1312,7 @@ function Update(){
             if (board[i - 1][j - 1] != "x"){
                 aff.src = board[i - 1][j - 1].chemin
             }else{
-                aff.src = ""
+                aff.src = "image/nothing.svg"
             }
         }
     }
