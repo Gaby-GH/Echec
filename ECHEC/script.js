@@ -331,6 +331,9 @@ let Piece = undefined
 let Case = undefined
 let xking = undefined
 let yking = undefined
+let Popcoord = false
+let numsupp = []
+
 function Play(){
     if (Moves.length == 1){
 
@@ -390,7 +393,7 @@ function Play(){
                     xking = BKing.position[0] - 1 
                     yking = BKing.position[1] - 1
                 }
-                
+
                 for (let c in ListMoves){
                     Case = board[ListMoves[c][0]][ListMoves[c][0]]
 
@@ -418,8 +421,7 @@ function Play(){
 
                             for (let t in LegalMoves){
                                 if (LegalMoves[t] == `${xking}${yking}`){
-                                    console.log(LegalMoves, xking, yking, LegalMoves[t])
-                                    console.log(LegalMoves.splice(t, 1)) // <---  pas ca reflechi stp
+                                    Popcoord = true
                                     // DONC ENLEVER LA POSSIBILITE A LA PIECE D'ALLER A CETTE CASE
                                 }
                             }
@@ -428,96 +430,21 @@ function Play(){
 
                     board[ListMoves[c][0]][ListMoves[c][0]] = Case
                     board[Moves[0][0] - 1][Moves[0][1] - 1] = Piece
-                }
-                
 
-
-
-
-                // REFAIRE ICI PENSER AVANT D ECRIRE LE CODE !!!!!
-
-
-
-
-
-
-
-                /*function IsEchec(xking, yking){
-                    for (let g in LegalMoves){
-                        if (g == `${xking}${yking}`){
-                            echec = true
-                        }
+                    if (Popcoord == true){
+                        numsupp.push(c)
+                        Popcoord = false
                     }
                 }
 
-                let ListMoves = [...LegalMoves]
-                for (p in ListMoves){
-                    let Piece = board[Moves[0][0] - 1][Moves[0][1] - 1]
-                    let Case = board[ListMoves[p][0]][ListMoves[p][1]]
-                    
-                    board[ListMoves[p][0]][ListMoves[p][1]] = Piece
-                    board[Moves[0][0] - 1][Moves[0][1] - 1] = "x"
-
-                    LegalMoves = []
-                    let xking = WKing.position[0] - 1
-                    let yking = WKing.position[1] - 1
-                    if (turn == "W"){
-                        xking = WKing.position[0] - 1
-                        yking = WKing.position[1] - 1
-                    }else if (turn == "B"){
-                        xking = BKing.position[0] - 1
-                        yking = BKing.position[1] - 1
-                    }
-
-                    for (let i=0; i<8; i++){
-                        for (let j=0; j<8; j++){
-                            if (board[i][j] != "x" && board[i][j].color != turn){
-                                if (board[i][j].type == "pawn"){
-                                    MovePawn(board[i][j])
-                                    IsEchec(xking, yking)
-                                }else if (board[i][j].type == "rook"){
-                                    MoveRook(board[i][j])
-                                    IsEchec(xking, yking)
-                                }else if (board[i][j].type == "bishop"){
-                                    MoveBishop(board[i][j])
-                                    IsEchec(xking, yking)
-                                }else if (board[i][j].type == "pony"){
-                                    MovePony(board[i][j])
-                                    IsEchec(xking, yking)
-                                }else if (board[i][j].type == "queen"){
-                                    MoveQueen(board[i][j])
-                                    IsEchec(xking, yking)
-                                }else if (board[i][j].type == "king"){
-                                    MoveKing(board[i][j])
-                                    IsEchec(xking, yking) 
-                                    Roque(board[i][j])
-                                    IsEchec(xking, yking)
-                                }
-                            }
-                            
-                            
-                        }
-                    }
-                    console.log(ListMoves)
-                    if (echec == true){
-                        ListMoves.splice(p, 1)
-
-                        console.log(p, ListMoves)
-                        echec = false
-                    }
-
-                    board[ListMoves[p][0]][ListMoves[p][1]] = Case
-                    board[Moves[0][0] - 1][Moves[0][1] - 1] = Piece
-
-
-                    // CONTINUER LA --> empecher piece de mettre son propre roi en echec
-                    //apres --> reinitialiser jeux quand echec et math + animation vite zaif
-                    // finir CheckPromo + reparer bug du  roi qui peut pas s'echapper
-
-
+                for (let u of numsupp){
+                    let indexofpos = ListMoves.indexOf(u)
+                    ListMoves.shift(indexofpos)
                 }
 
-                LegalMoves = [...ListMoves]  // <----- TESTER !!!!!!!!!! */
+                numsupp = []
+                console.log(ListMoves)
+                LegalMoves = [...ListMoves]
             }
             
             
@@ -621,12 +548,12 @@ function MovePawn(pawn){
                 LegalMoves.push(`${xpawn_tab}${ypawn_tab + 2}`)
             }
         }
-    
-        if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
+        
+        if (xpawn_tab != 7 && ypawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab + 1].color){
             LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab + 1}`)
         }
     
-        if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
+        if (xpawn_tab != 0 && ypawn_tab != 7 && board[xpawn_tab - 1][ypawn_tab + 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab + 1].color){
             LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab + 1}`)
         }
 
@@ -645,11 +572,11 @@ function MovePawn(pawn){
             }
         }
     
-        if (xpawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
+        if (xpawn_tab != 0 && ypawn_tab != 0 && board[xpawn_tab - 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab - 1][ypawn_tab - 1].color){
             LegalMoves.push(`${xpawn_tab - 1}${ypawn_tab - 1}`)
         }
     
-        if (xpawn_tab != 7 && board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
+        if (xpawn_tab != 7 && ypawn_tab != 0 && board[xpawn_tab + 1][ypawn_tab - 1] != "x" && board[xpawn_tab][ypawn_tab].color != board[xpawn_tab + 1][ypawn_tab - 1].color){
             LegalMoves.push(`${xpawn_tab + 1}${ypawn_tab - 1}`)
         }
 
@@ -1096,48 +1023,6 @@ function Echec(xking, yking){
     if (echec == true){
         MoveStopEchec = []
 
-
-        // LA PIECE QUI MET EN ECHEC PEUT ELLE ETRE MANGER ?
-        /*function CanTake(){
-            for (let i in LegalMoves){
-                for (let j in PositionEchec){
-                    if (LegalMoves[i][0] == PositionEchec[j].position[0] - 1 && LegalMoves[i][1] == PositionEchec[j].position[1] - 1){
-                        MoveStopEchec.push(`${LegalMoves[i]}`)
-                    }
-                }
-            }
-
-            LegalMoves = []
-        }
-        
-        for (let x=0; x<8; x++){
-            for (let y=0; y<8; y++){
-                if (board[x][y].color == turn){
-                    if (board[x][y].type == "pawn"){
-                        MovePawn(board[x][y])
-                        CanTake()
-                    }else if (board[x][y].type == "rook"){
-                        MoveRook(board[x][y])
-                        CanTake()
-                    }else if (board[x][y].type == "bishop"){
-                        MoveBishop(board[x][y])
-                        CanTake()
-                    }else if (board[x][y].type == "pony"){
-                        MovePony(board[x][y])
-                        CanTake()
-                    }else if (board[x][y].type == "queen"){
-                        MoveQueen(board[x][y])
-                        CanTake()
-                    }else if (board[x][y].type == "king"){
-                        MoveKing(board[x][y])
-                        CanTake() 
-                        Roque(board[x][y])
-                        CanTake()
-                    }
-                }
-            }
-        }*/
-
         // UN PION DE LA COULEUR DU ROI EN ECHEC PEUT IL BLOQUER ATTAQUE DE LA PIECE QUI MET EN ECHEC ?
 
         function CanBlock(piece){
@@ -1254,26 +1139,173 @@ function Echec(xking, yking){
 
         LegalMoves = []
     }
-}  
-
-     // CONTINUER LA / ETAPES SUR FICHE 
-
-
-
-
-// REPARER BUG DUCPLICA
-
-
-
-
-
-
-
+} 
 
 // fonction de calcul des pieces (end)
 
+let NbrWQueen = 1
+let WQueen2 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen3 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen4 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen5 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen6 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen7 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen8 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+let WQueen9 = {
+    type: "queen",
+    color: "W",
+    chemin: "image/white_dame.svg"
+}
+
+
+let NbrBQueen = 1
+let BQueen2 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen3 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen4 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen5 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen6 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen7 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen8 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+let BQueen9 = {
+    type: "queen",
+    color: "B",
+    chemin: "image/black_dame.svg"
+}
+
+function CheckPromo(){
+    for (let it in board){
+        if (board[it][0] != "x" && board[it][0].color == "B" && board[it][0].type == "pawn"){
+            if (NbrBQueen == 1){
+                BQueen2.position = board[it][0].position
+                board[it][0] = BQueen2
+                NbrBQueen += 1
+            }else if (NbrBQueen == 2){
+                BQueen3.position = board[it][0].position
+                board[it][0] = BQueen3
+                NbrBQueen += 1
+            }else if (NbrBQueen == 3){
+                BQueen4.position = board[it][0].position
+                board[it][0] = BQueen4
+                NbrBQueen += 1
+            }else if (NbrBQueen == 4){
+                BQueen5.position = board[it][0].position
+                board[it][0] = BQueen5
+                NbrBQueen += 1
+            }else if (NbrBQueen == 5){
+                BQueen6.position = board[it][0].position
+                board[it][0] = BQueen6
+                NbrBQueen += 1
+            }else if (NbrBQueen == 6){
+                BQueen7.position = board[it][0].position
+                board[it][0] = BQueen7
+                NbrBQueen += 1
+            }else if (NbrBQueen == 7){
+                BQueen8.position = board[it][0].position
+                board[it][0] = BQueen8
+                NbrBQueen += 1
+            }else if (NbrBQueen == 8){
+                BQueen9.position = board[it][0].position
+                board[it][0] = BQueen9
+                NbrBQueen += 1
+            }
+
+        }else if (board[it][7] != "x" && board[it][7].color == "W" && board[it][7].type == "pawn"){
+            if (NbrWQueen == 1){
+                WQueen2.position = board[it][7].position
+                board[it][7] = WQueen2
+                NbrWQueen += 1
+            }else if (NbrWQueen == 2){
+                WQueen3.position = board[it][7].position
+                board[it][7] = WQueen3
+                NbrWQueen += 1
+            }else if (NbrWQueen == 3){
+                WQueen4.position = board[it][7].position
+                board[it][7] = WQueen4
+                NbrWQueen += 1
+            }else if (NbrWQueen == 4){
+                WQueen5.position = board[it][7].position
+                board[it][7] = WQueen5
+                NbrWQueen += 1
+            }else if (NbrWQueen == 5){
+                WQueen6.position = board[it][7].position
+                board[it][7] = WQueen6
+                NbrWQueen += 1
+            }else if (NbrWQueen == 6){
+                WQueen7.position = board[it][7].position
+                board[it][7] = WQueen7
+                NbrWQueen += 1
+            }else if (NbrWQueen == 7){
+                WQueen8.position = board[it][7].position
+                board[it][7] = WQueen8
+                NbrWQueen += 1
+            }else if (NbrWQueen == 8){
+                WQueen9.position = board[it][7].position
+                board[it][7] = WQueen9
+                NbrWQueen += 1
+            }
+        }
+    }
+}
 
 function Update(){
+    CheckPromo()
+
     for (let i=1; i<=8; i++){
         for (let j=1; j<=8; j++){
             let aff = document.getElementById(`${i}${j}`)
@@ -1291,310 +1323,3 @@ function Update(){
         turn = "W"
     }
 }
-
-/*function GameOver(){
-    // WHITE
-
-    WRook1 = {
-        color: "W",
-        type: "rook",
-        position: [1, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_tour.svg",
-    }
-
-    WRook2 = {
-        color: "W",
-        type: "rook",
-        position: [8, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_tour.svg",
-}    
-
-    WPony1 = {
-        color: "W",
-        type: "pony",
-        position: [2, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_poney.svg",
-    }
-
-    WPony2 = {
-        color: "W",
-        type: "pony",
-        position: [7, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_poney.svg",
-    }
-
-    WBishop1 = {
-        color: "W",
-        type: "bishop",
-        position: [3, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_fou.svg",
-    }
-
-    WBishop2 = {
-        color: "W",
-        type: "bishop",
-        position: [6, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_fou.svg",
-    }
-
-    WQueen = {
-        color: "W",
-        type: "queen",
-        position: [4, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_dame.svg",
-    }
-
-    WKing = {
-        color: "W",
-        type: "king",
-        position: [5, 1],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_king.svg",
-    }
-
-    WPawn1 = {
-        color: "W",
-        type: "pawn",
-        position: [1, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn2 = {
-        color: "W",
-        type: "pawn",
-        position: [2, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-    WPawn3 = {
-        color: "W",
-        type: "pawn",
-        position: [3, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn4 = {
-        color: "W",
-        type: "pawn",
-        position: [4, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn5 = {
-        color: "W",
-        type: "pawn",
-        position: [5, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn6 = {
-        color: "W",
-        type: "pawn",
-        position: [6, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn7 = {
-        color: "W",
-        type: "pawn",
-        position: [7, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    WPawn8 = {
-        color: "W",
-        type: "pawn",
-        position: [8, 2],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/white_pion.svg",
-    }
-
-    // BLACK
-
-    BRook1 = {
-        color: "B",
-        type: "rook",
-        position: [1, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_tour.svg",
-    }
-
-    BRook2 = {
-        color: "B",
-        type: "rook",
-        position: [8, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_tour.svg",
-    }  
-
-    BPony1 = {
-        color: "B",
-        type: "pony",
-        position: [2, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_poney.svg",
-    }
-
-    BPony2 = {
-        color: "B",
-        type: "pony",
-        position: [7, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_poney.svg",
-    }
-
-    BBishop1 = {
-        color: "B",
-        type: "bishop",
-        position: [3, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_fou.svg",
-    }
-
-    BBishop2 = {
-        color: "B",
-        type: "bishop",
-        position: [6, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_fou.svg",
-    }
-
-    BQueen = {
-        color: "B",
-        type: "queen",
-        position: [4, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_dame.svg",
-    }
-
-    BKing = {
-        color: "B",
-        type: "king",
-        position: [5, 8],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_king.svg",
-    }
-
-BPawn1 = {
-    color: "B",
-    type: "pawn",
-    position: [1, 7],
-    AlreadyMoved: false,
-    Moves: [],
-    chemin: "image/black_pion.svg",
-}
-
-    BPawn2 = {
-        color: "B",
-        type: "pawn",
-        position: [2, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-    BPawn3 = {
-        color: "B",
-        type: "pawn",
-        position: [3, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-
-    BPawn4 = {
-        color: "B",
-        type: "pawn",
-        position: [4, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-
-    BPawn5 = {
-        color: "B",
-        type: "pawn",
-        position: [5, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-
-    BPawn6 = {
-        color: "B",
-        type: "pawn",
-        position: [6, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-
-    BPawn7 = {
-        color: "B",
-        type: "pawn",
-        position: [7, 7],
-        AlreadyMoved: false,
-        Moves: [],
-        chemin: "image/black_pion.svg",
-    }
-
-    BPawn8 = {
-      color: "B",
-      type: "pawn",
-      position: [8, 7],
-      AlreadyMoved: false,
-      Moves: [],
-      chemin: "image/black_pion.svg",
-    }
-
-
-    a = [WRook1, WPawn1, "x", "x", "x", "x", BPawn1, BRook1]
-    b = [WPony1, WPawn2, "x", "x", "x", "x", BPawn2, BPony1]                              
-    c = [WBishop1, WPawn3, "x", "x", "x", "x", BPawn3, BBishop1]
-    d = [WQueen, WPawn4, "x", "x", "x", "x", BPawn4, BQueen]
-    e = [WKing, WPawn5, "x", "x", "x", "x", BPawn5, BKing]
-    f = [WBishop2, WPawn6, "x", "x", "x", "x", BPawn6, BBishop2]
-    g = [WPony2, WPawn7, "x", "x", "x", "x", BPawn7, BPony2]
-    h = [WRook2, WPawn8, "x", "x", "x", "x", BPawn8, BRook2]
-    board = [a, b, c, d, e, f, g, h]
-
-    PriseEnPassant = {legal: false, color: undefined, position: undefined}
-
-    Update()
-}*/
